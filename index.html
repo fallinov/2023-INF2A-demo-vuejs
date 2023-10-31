@@ -2,10 +2,107 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Démo Vue.js</title>
+    <style>
+        .alert {
+            color: darkred;
+        }
+        .produits {
+            list-style: none;
+            padding: 0;
+            margin: 1.5rem auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .produits li {
+            border-radius: 4px;
+            box-shadow: 0 0 10px #ccc;
+            padding: 1rem;
+            text-align: center;
+            max-width: 250px;
+        }
+
+        .produits img {
+            max-width: 150px;
+        }
+
+        .produits .prix {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin: .25rem 0
+        }
+
+        .produits .stock {
+            color: #333;
+            font-size: .8em;
+        }
+
+        .produits .actions {
+            margin-top: 1rem;
+        }
+
+        .produits .actions button {
+            padding: .5em 1em;
+        }
+
+        .produits .actions input {
+            width: 6em;
+            text-align: center;
+            padding: .5em 0;
+        }
+    </style>
 </head>
 <body>
-    <h1>Démo Vue.js 2.0</h1>
+<h1>Démo Vue.js 2.0</h1>
+<div id="app">
+    <h2>{{ categorie }}</h2>
+    <div>Stock total : {{ totalStock }}</div>
+    <ul class="produits">
+        <li v-for="prod in produits">
+            <img :src="'img/' + prod.img" :alt="prod.nom">
+            <h3>{{ prod.nom }}</h3>
+            <div class="prix">CHF {{ prod.prix }}</div>
+            <div class="stock">
+                <span v-if="prod.qte < 1" class="alert">Plus de stock !!!</span>
+                <span v-else>{{ prod.qte }} pièces en stock</span>
+            </div>
+            <div class="actions">
+                <button @click="prod.qte -= 1"
+                        :disabled="prod.qte < 1"
+                >-</button>
+                <input type="text" v-model.number="prod.qte">
+                <button @click="prod.qte += 1">+</button>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script>
+  const app = new Vue({
+    el: '#app',
+    data: {
+      categorie: 'Produits',
+      produits: [
+        {id: 112, nom: 'Iphone X', qte: 3, prix: '896.00', img: 'apple.png'},
+        {id: 53, nom: 'Samsung S9', qte: 0, prix: '799.00', img: 'android.png'},
+        {id: 68, nom: 'Huawei P20', qte: 2, prix: '699.00', img: 'win.jpg'}
+      ]
+    },
+    computed: {
+      totalStock() {
+        let total = 0;
+        for (let prod of this.produits) {
+          total += prod.qte
+        }
+        return total;
+      }
+    },
+  })
+</script>
 </body>
 </html>
